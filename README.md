@@ -1,0 +1,70 @@
+# 🎓 Sandevistan: The Automated Class Attendee
+
+> **"Still, I am not sure I would wake up."**
+
+Sandevistan is an automated agent built to handle the struggle of 8:00 AM online classes. It monitors your WhatsApp messages for meeting links, joins the class on your behalf (with mic and camera off), and then blasts an urgent notification to your phone so you can wake up and take over.
+
+---
+
+## 🚀 How it Works
+1. **Monitor:** [Evolution API](https://github.com/EvolutionAPI/evolution-api) (Docker) connects to WhatsApp and forwards messages to n8n.
+2. **Brain:** [n8n](https://n8n.io/) (Docker) parses the message, extracts the Google Meet/Zoom link, and verifies it's within class hours (8 AM – 3 PM).
+3. **Bridge:** n8n calls a Node.js bridge running on your host machine.
+4. **Execution:** A **Puppeteer Stealth** script launches Chrome, syncs your local profile (so you're already logged in), mutes everything, and joins the call.
+5. **Wake Up:** Once inside, a high-priority alert is sent to your phone via [ntfy.sh](https://ntfy.sh/).
+
+---
+
+## 🛠️ Tech Stack
+- **Automation:** Puppeteer + Puppeteer Stealth
+- **WhatsApp:** Evolution API (v2)
+- **Workflow Engine:** n8n
+- **Database:** PostgreSQL (for session persistence)
+- **Cache:** Redis
+- **Alerts:** ntfy (Android/iOS)
+- **Process Management:** PM2
+
+---
+
+## 📦 Installation & Setup
+
+### 1. Prerequisites
+- [Docker & Docker Compose](https://docs.docker.com/get-docker/)
+- [Node.js](https://nodejs.org/) (v18+)
+- Google Chrome installed on your OS
+
+### 2. Deploy the Stack (Docker)
+This command launches Evolution API, n8n, Postgres, and Redis:
+```bash
+docker-compose up -d
+
+
+3. Setup the Local Scripts
+
+    Install dependencies:
+    npm install
+
+    Configure your environment:
+    cp .env.example .env
+
+    Edit .env and provide your STUDENT_NAME and a unique NTFY_TOPIC.
+
+4. Run the Bridge
+
+The bridge allows the Dockerized n8n to communicate with your host's Chrome. Use PM2 to keep it alive:
+Bash
+
+pm2 start bridge.js --name "sandevistan-bridge"
+
+📋 Environment Variables (.env)
+Variable	Description
+STUDENT_NAME	The name typed into the meeting if not logged in.
+NTFY_TOPIC	A secret topic name for your phone alerts.
+
+🛑 Disclaimer
+
+This project is for educational purposes. Use of unofficial APIs may violate WhatsApp's Terms of Service. Use at your own risk!
+
+📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
