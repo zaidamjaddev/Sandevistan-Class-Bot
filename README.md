@@ -62,6 +62,28 @@ The bridge allows the Dockerized n8n to communicate with your host's Chrome. Use
 pm2 start bridge.js --name "sandevistan-bridge"
 
 
+5. Setup n8n Workflow
+
+    Open n8n at http://localhost:5678.
+
+    Import the workflow.json file provided in this repository.
+
+    In the Code Node, ensure the currentHour logic matches your local timezone.
+
+    Copy the Webhook URL from the first node and set it as the Webhook URL in your Evolution API instance settings and make sure to make the workflow publish.
+
+
+6. Setup ntfy Mobile App (Alarm)
+
+    Install the ntfy app on your phone (Android / iOS).
+
+    Click "Subscribe to topic".
+
+    Enter the exact same NTFY_TOPIC you set in your .env file.
+
+    Ensure "Override Do Not Disturb" is enabled in the app settings if you want the alarm to wake you up!
+
+
 📋 Environment Variables (.env)
 Variable	Description
 STUDENT_NAME	The name typed into the meeting if not logged in.
