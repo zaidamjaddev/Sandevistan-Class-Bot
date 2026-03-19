@@ -234,12 +234,12 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     if (joined) {
       console.log("🔊 Starting the alarm loop...");
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 1; i++) {
         try {
           const response = await axios({
             method: "post",
             url: "https://ntfy.sh/zaid_wake_up",
-            data: ` WAKE UP ZAID! Alert ${i + 1}/10\n${url}`,
+            data: ` WAKE UP ZAID! Alert ${i + 1}\n${url}`,
             timeout: 10000,
             httpsAgent: ipv4Agent, // Using the agent you defined
             headers: {

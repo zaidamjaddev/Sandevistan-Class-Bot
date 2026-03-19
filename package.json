@@ -1,7 +1,21 @@
 {
-  "name": "sandevistan-agent",
+  "name": "sandevistan-class-bot",
   "version": "1.0.0",
+  "description": "An automated WhatsApp-to-Puppeteer agent for joining online classes.",
   "main": "join.js",
+  "scripts": {
+    "start": "node bridge.js",
+    "test-join": "node join.js https://meet.google.com/test-link"
+  },
+  "keywords": [
+    "puppeteer",
+    "whatsapp-bot",
+    "automation",
+    "n8n",
+    "evolution-api"
+  ],
+  "author": "Zaid Amjad",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0",
     "puppeteer": "^21.5.0",
