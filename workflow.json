@@ -1,0 +1,139 @@
+{
+  "name": "class_bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-link",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        -16
+      ],
+      "id": "7e08b4ab-5973-44eb-99d8-f91e0a04670c",
+      "webhookId": "cf9f0fa3-8fb0-4c02-a508-b57e3bfb242f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. TIME CHECK\nconst currentHour = new Date().getHours();\nif (currentHour < 7 || currentHour >= 14) {\n  return [{ json: { status: \"ignored\", reason: \"Outside class hours\" } }];\n}\n\n// 2. EXTRACT MESSAGE\nconst data = $input.first().json.body?.data?.message;\nconst message = data?.conversation || \n                data?.extendedTextMessage?.text || \n                data?.imageMessage?.caption || \"\";\n\n// 3. DETECT LINK\nconst meetRegex = /https:\\/\\/meet\\.google\\.com\\/[a-z0-9-]+/gi;\nconst zoomRegex = /https:\\/\\/([a-z0-9]+\\.)?zoom\\.us\\/(j|my)\\/[a-z0-9?=\\w-]+/gi;\nconst finalLink = message.match(meetRegex)?.[0] || message.match(zoomRegex)?.[0];\n\nif (!finalLink) {\n  return [{ json: { status: \"no_link\", preview: message.substring(0, 50) } }];\n}\n\nreturn [{ json: { \n  status: \"found\",\n  link: finalLink,\n  platform: finalLink.includes('meet.google') ? \"Google Meet\" : \"Zoom\"\n} }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        -16
+      ],
+      "id": "47cf8765-79c6-4420-90e5-ecc77f2682e4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "00a475e1-31a0-4471-be10-f794d526b861",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "found",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        -16
+      ],
+      "id": "4d7671f2-fa6c-4d5a-b494-40241598c8e9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3333",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "link",
+              "value": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "fa8823bb-bda3-4a83-b0d9-50c0b682dc62",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4413c427-b432-4c9d-9c6f-a271549835d8",
+  "meta": {
+    "instanceId": "e0d056fa6d3a53de5a4ddb5a0c78cfa196ed9a3c34f9fbfeb5a0fd896bd04d21"
+  },
+  "id": "ZTI1RWsWLrzEgsgr",
+  "tags": []
+}

@@ -1,7 +1,7 @@
 🎓 Sandevistan: The Automated Class Attendee
 
 Sandevistan is an automated agent built to handle the struggle of 8:00 AM online classes. It monitors your WhatsApp messages for meeting links, joins the class on your behalf (with mic and camera off), and then blasts an urgent notification to your phone so you can wake up and take over.
-🚀 How it Works
+# How it Works
 
     Monitor: Evolution API (Docker) connects to WhatsApp and forwards messages to n8n.
 
@@ -13,7 +13,7 @@ Sandevistan is an automated agent built to handle the struggle of 8:00 AM online
 
     Wake Up: Once inside, a high-priority alert is sent to your phone via ntfy.sh.
 
-🛠️ Tech Stack
+# Tech Stack
 
     Automation: Puppeteer + Puppeteer Stealth
 
@@ -29,7 +29,7 @@ Sandevistan is an automated agent built to handle the struggle of 8:00 AM online
 
     Process Management: PM2
 
-📦 Installation & Setup
+# Installation & Setup
 1. Prerequisites
 
     Docker & Docker Compose
@@ -70,7 +70,7 @@ NTFY_TOPIC	A secret topic name for your phone alerts.
 
 🛑 Disclaimer
 
-This project is for educational purposes. Use of unofficial APIs may violate WhatsApp's Terms of Service. Use at your own risk! The author is not responsible for missed attendance or grumpy professors!
+This project is for educational purposes. Use of unofficial APIs may violate WhatsApp's Terms of Service. Use at your own risk!
 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
