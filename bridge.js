@@ -1,7 +1,9 @@
 const http = require('http');
 const { exec } = require('child_process');
+const path = require('path');
+const os = require('os');
 
-const PORT = 3333;
+const PORT = process.env.PORT || 3333;
 
 const server = http.createServer((req, res) => {
   if (req.method !== 'POST') {
@@ -19,11 +21,16 @@ const server = http.createServer((req, res) => {
         return res.end(JSON.stringify({ error: 'No link provided' }));
       }
 
-      console.log(`🚀 Received link: ${link}`);
+      console.log(`Received link from n8n: ${link}`);
 
-      // Run the bot in background — don't block the response
-      exec(`node /home/zaid/sandevistan_scripts/join.js "${link}"`, (err, stdout, stderr) => {
-        if (err) console.error('Bot error:', err.message);
+      // Path handling 
+      const joinScriptPath = path.join(__dirname, 'join.js');
+
+      // Detect shell command based on OS
+      const cmd = `node "${joinScriptPath}" "${link}"`;
+
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) console.error('Bot execution error:', err.message);
         if (stdout) console.log('Bot output:', stdout);
         if (stderr) console.error('Bot stderr:', stderr);
       });
@@ -31,7 +38,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ 
         status: 'success', 
-        message: 'Bot launched!',
+        message: `Sandevistan Bridge: Bot launched on ${os.platform()}!`,
         link 
       }));
 
@@ -43,6 +50,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Bridge running on port ${PORT}`);
-  console.log(`📡 Waiting for n8n to send meeting links...`);
+  console.log(`Bridge active on port ${PORT}`);
+  console.log(`Waiting for n8n to send meeting links...`);
 });
